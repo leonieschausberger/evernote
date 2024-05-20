@@ -1,0 +1,110 @@
+<style>
+  body {
+    width: 600px;
+  }
+  .ui.container {
+    margin-top: 20px;
+    align-items: center;
+    margin-left: 100px;
+  }
+  .ui.search {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  .ui.search .ui.icon.input {
+    width: 50%;
+    max-width: 600px;
+  }
+  .ui.middle.aligned.divided.list {
+    margin: 0;
+    padding: 0;
+  }
+  .ui.middle.aligned.divided.list .item {
+    padding-left: 1em;
+    padding-right: 1em;
+  }
+
+  .ui.button{
+    background-color: #b91554;
+    padding-left: 1em;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    color: white;
+  }
+
+  .ui.button:hover{
+    background-color: #adc4ec;
+    padding-left: 1em;
+    margin-top: 10px;
+    margin-bottom: 20px;
+  }
+
+</style>
+<body>
+
+<div class="ui container">
+  <!-- Suche nach Listen mit Eingabefeld -->
+  <div class="ui search" [ngClass]="{ loading: isLoading }">
+    <div class="ui icon input">
+      <input (keyup)="keyup.emit(searchTerm.value)" #searchTerm class="prompt" type="text" placeholder="Suche...">
+      <i class="search icon"></i>
+    </div>
+  </div>
+
+  <!-- Authentifizierungsstatus anzeigen -->
+  <div class="collections-container">
+    @if (authService.isLoggedOut()) {
+      <h3 class="ui header">Alle Listen</h3>
+      <div class="ui middle aligned divided list relaxed">
+        @for (collection of collections; track collection.title) {
+          <a class="item en-collection-list-item" [collection]="collection" [routerLink]="collection.id.toString()">
+            <i class="large folder icon"></i>
+            <div class="content">
+              <a class="header">{{ collection.title }}</a>
+              <div class="description">{{ collection.description }}</div>
+            </div>
+          </a>
+        }
+      </div>
+    }
+
+    @if (authService.isLoggedIn()) {
+      <h3 class="ui header">Eigene Listen</h3>
+      <!-- Button zum Hinzufügen neuer Listen -->
+      <a class="ui tiny icon button" [routerLink]="['/admin']">
+        <i class="plus icon"></i> Liste Hinzufügen
+      </a>
+      <div class="ui middle aligned divided list relaxed">
+        @for (collection of collections; track collection.title) {
+          <a class="item en-collection-list-item" [collection]="collection" [routerLink]="collection.id.toString()">
+            <i class="large folder icon"></i>
+            <div class="content">
+              <a class="header">{{ collection.title }}</a>
+              <div class="description">{{ collection.description }}</div>
+            </div>
+          </a>
+        }
+      </div>
+
+      <h3 class="ui header">Geteilte Listen</h3>
+      <div class="ui middle aligned divided list relaxed">
+        @if (sharedCollections && sharedCollections.length > 0) {
+          @for (collection of sharedCollections; track collection.title) {
+            <a class="item en-collection-list-item" [collection]="collection" [routerLink]="collection.id.toString()">
+              <i class="large folder open icon"></i>
+              <div class="content">
+                <a class="header">{{ collection.title }}</a>
+                <div class="description">{{ collection.description }}</div>
+              </div>
+            </a>
+          }
+        } @else {
+          <p>Keine geteilten Listen vorhanden</p>
+        }
+      </div>
+
+
+    }
+  </div>
+

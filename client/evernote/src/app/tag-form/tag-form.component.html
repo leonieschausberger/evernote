@@ -1,0 +1,13 @@
+<h1>Todo Formular</h1>
+<form class="ui large form" [formGroup]="tagForm" (ngSubmit)="submitForm()">
+  <input type="hidden" >
+
+  <div class="field">
+    <label>Title</label>
+    <input formControlName="title">
+    @if(errors['title']){
+      <div class="ui negative message">{{ errors['title'] }}</div>
+    }
+  </div>
+  <button type="submit" class="ui button" [disabled]="tagForm.invalid">Speichern</button>
+</form>

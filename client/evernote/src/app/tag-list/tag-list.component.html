@@ -1,0 +1,85 @@
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    height: 400px;
+    margin: 0;
+  }
+  .ui.container {
+    width: 80%;
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  .ui.header.text {
+    color: #adc4ec;
+    text-align: center;
+  }
+  .ui.labels .label, .ui.label {
+    background-color: #adc4ec;
+    color: white;
+    margin: 5px 5px 5px 0;
+  }
+  .ui.button.tag-add {
+    background-color: #b91554;
+    color: white;
+    margin-bottom: 10px;
+  }
+  .delete-button {
+    background: none;
+    border: none;
+    color: white;
+    margin-left: 10px;
+    cursor: pointer;
+    font-size: 1em;
+  }
+  .ui.segment {
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  .ui.segment.no-tags {
+    text-align: center;
+  }
+</style>
+
+<body>
+
+<div class="ui container">
+  @if (tags && tags.length > 0) {
+    <div class="ui segment">
+      <h2 class="ui header text">Alle Tags</h2>
+
+      @if (authService.isLoggedIn()){
+        <a class="ui tiny yellow labeled icon button tag-add"
+           [routerLink]="['/adminTags']">
+          <i class="plus icon"></i> Tag hinzufügen
+        </a>
+      }
+
+      <div class="ui labels">
+        @for (tag of tags; track tag.id) {
+          <div class="ui label">
+            {{ tag.title }}
+            @if (authService.isLoggedIn()){
+              <button class="delete-button" (click)="removeTag(tag.id)">x</button>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  } @else {
+    <div class="ui segment no-tags">
+      <h2 class="ui header text">Tags without Notes or Todos</h2>
+      <p>No tags available without notes or todos.</p>
+    </div>
+  }
+</div>
+
+</body>

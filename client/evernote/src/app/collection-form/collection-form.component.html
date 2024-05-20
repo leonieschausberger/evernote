@@ -1,0 +1,74 @@
+<h1>Listenformular</h1>
+<form  class="ui large form" [formGroup]="collectionForm" (ngSubmit)="submitForm()">
+  <input type="hidden" formControlName="id">
+  <div class="field">
+    <label>Title</label>
+    <input formControlName="title">
+    @if(errors['title']){
+      <div class="ui negative message"> {{ errors['title'] }} </div>
+    }
+  </div>
+
+  <div class="field">
+    <label>Beschreibung</label>
+    <textarea formControlName="description" rows="3"></textarea>
+  </div>
+
+  <div class="field">
+    <label>Private Liste</label>
+    <div class="ui toggle checkbox">
+      <input type="checkbox" formControlName="areYouPrivate">
+      <label>Ja</label>
+    </div>
+  </div>
+
+  <div class="field">
+    <label>Bilder1</label>
+    <div formArrayName="images">
+      @for(control of images.controls; let i =$index, l=$last; track control){
+        <div class="fields" [formGroupName]="i">
+          <input type="hidden" formControlName="id">
+          <div class="nine wide field">
+            <input formControlName="url" placeholder="http://bild{{i+1}}_url">
+          </div>
+          <div class="six wide field">
+            <input formControlName="title" placeholder="Bild{{i+1}}_Titel">
+          </div>
+          @if(l){
+            <div class="one wide field">
+              <button (click)="addThumbnailControl()" class="ui large button" type="button">+</button>
+            </div>
+          }
+        </div>
+      }
+    </div>
+    @if (errors['images']){
+      <div class="ui negative message">{{ errors['images'] }}</div>
+    }
+  </div>
+
+  @if (!collectionForm.value?.areYouPrivate) {
+  <div class="field">
+    <label>Shared Users</label>
+
+   <!-- <div formArrayName="collaborators">
+        @for (user of collectionForm.value?.collaborators; let i = $index; track user) {
+        <input [formControlName]="i" type="checkbox"/>{{ " " + user.first_name + " " + user.last_name}}
+        }
+    </div> -->
+
+    @for (user of allUsers; let i = $index; track user) {
+      <div>
+        <input type="checkbox" [value]="user.id" [checked]="isCollectionSharedWithUser(user.id)" (change)="onCheckboxChange($event)"> {{ " " + user.first_name + " " + user.last_name}}
+      </div>
+      }
+
+
+    @if (!(collectionForm.value?.collaborators?.length > 0)) {
+      <div>Für keine weiteren User freigegeben.</div>
+    }
+  </div>
+  }
+
+  <button type="submit" class="ui button" [disabled]="collectionForm.invalid">Speichern</button>
+</form>

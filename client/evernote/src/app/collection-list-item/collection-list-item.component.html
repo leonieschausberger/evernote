@@ -1,0 +1,73 @@
+<style>
+  body {
+    width: 600px;
+  }
+  .ui.container {
+    width: 90%;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  .ui.card {
+    width: 100%;
+    margin-bottom: 20px;
+    margin-top: 20px;
+  }
+  .ui.card:hover {
+    background-color: #f6f6f6;
+  }
+
+
+  .ui.card .content {
+    padding: 20px;
+  }
+  .ui.card .header h3 {
+    margin: 0;
+    font-size: 1.5em;
+  }
+  .ui.card .description {
+    margin: 10px 0;
+  }
+  .ui.card .meta {
+    margin: 5px 0;
+    color: grey;
+  }
+  .ui.card .extra {
+    margin-top: 10px;
+    font-size: 0.9em;
+    color: #888;
+  }
+</style>
+
+<body>
+
+<div class="ui container">
+  <div class="ui card">
+    <div class="content">
+      <a class="header">
+        <h3>{{ collection?.title }}</h3>
+      </a>
+      <div class="description">{{ collection?.description }}</div>
+      <div class="meta">
+        <span>Erstellt von: {{ collection?.creator?.first_name }} {{ collection?.creator?.last_name }}</span>
+      </div>
+      <div class="meta">
+        @if (collection?.areYouPrivate == false){
+          <span>Geteilt mit:
+            @for (collaborators of collection?.collaborators; track collaborators; let l = $last) {
+              <span>{{ collaborators.first_name }} {{ collaborators.last_name }}@if(!l){<span>, </span>}</span>
+            }
+          </span>
+            }
+         @else {
+        <span>Private Liste</span>
+      }
+      </div>
+      <div class="extra">
+        ID: {{ collection?.id }}
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>

@@ -1,0 +1,50 @@
+<style>
+  body {
+    align-content: baseline;
+    font-family: Arial, sans-serif;
+  }
+  .ui.container {
+    display: flex;
+    min-height: 100vh;
+    margin: 0;
+  }
+  .ui.vertical.menu {
+    width: 100px;
+    min-width: 150px; /* Mindestbreite für bessere Lesbarkeit */
+    padding-top: 20px;
+    padding-left: 10px;
+  }
+  .ui.segment {
+    flex: 1;
+    margin-left: 20px;
+    padding: 20px;
+  }
+</style>
+
+<body>
+
+<div class="ui container">
+  <div class="ui vertical  tabular menu">
+    <a routerLink="collections" routerLinkActive="active" class="item">
+      <i class="list icon"></i>
+      Listen
+    </a>
+    <a routerLink="todos" routerLinkActive="active" class="item">
+      <i class="check square icon"></i>
+      Todos
+    </a>
+    <a routerLink="tags" routerLinkActive="active" class="item">
+      <i class="tags icon"></i>
+      Tags
+    </a>
+    <a routerLink="login" routerLinkActive="active" class="item">
+      <i class="user icon"></i>
+      {{getLoginLabel()}}
+    </a>
+  </div>
+  <div class="ui segment">
+    <router-outlet></router-outlet>
+  </div>
+</div>
+
+</body>

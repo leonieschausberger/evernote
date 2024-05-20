@@ -1,0 +1,182 @@
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #ffffff;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+  }
+  .ui.container {
+    width: 80%;
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  .ui.card {
+    width: 100%;
+    margin-bottom: 20px;
+    margin-top: 20px;
+  }
+  .ui.card:hover {
+    background-color: #f6f6f6;
+  }
+  .ui.card .content {
+    padding: 20px;
+  }
+  .ui.card .header h3 {
+
+    margin: 0;
+    font-size: 1.5em;
+  }
+  .ui.card .description {
+    margin: 10px 0;
+  }
+  .ui.card .meta {
+    margin: 5px 0;
+    color: grey;
+  }
+  .ui.card .extra {
+    margin-top: 10px;
+    font-size: 0.9em;
+    color: #888;
+  }
+  .note-label .header h2, .note-label .description h5 {
+    margin: 0;
+    font-size: 1em;
+  }
+  .note-label .header, .note-label .description {
+    display: block;
+    color: black;
+  }
+  .note-label {
+    margin-bottom: 5px;
+  }
+  .ui.buttons .button {
+    margin-top: 10px;
+  }
+
+  .ui.button.notiz{
+    background-color: #b91554;
+    color: white;
+  }
+
+  .ui.header.text {
+    color: #adc4ec;
+  }
+
+  .header.groß {
+    font-size: large;
+  }
+
+  .description.weiß{
+    color: white;
+
+  }
+
+  .ui.labels .label, .ui.label {
+
+    background-color: #adc4ec;
+
+  }
+
+
+</style>
+
+<body>
+<div class="ui container">
+  @if(collection){
+    <div class="ui centered grid">
+      <div class="four wide column">
+        @if(collection.images && collection.images[0]){
+          <img class="ui rounded fluid image" [src]="collection.images[0].url" alt="{{ collection.title }}">
+        } @else {
+          <img class="ui rounded fluid image" src="https://via.placeholder.com/150" alt="No Image Available">
+        }
+      </div>
+
+      <div class="twelve wide column">
+        <h1 class="ui header text">{{ collection.title }}</h1>
+        <h3 class="ui grey sub header">{{ collection.description }}</h3>
+        <div class="ui section divider"></div>
+        <div class="ui stackable grid">
+          @if(!collection.areYouPrivate){
+            <div class="three wide column">
+              <h4 class="ui header">Geteilt mit</h4>
+              <div class="ui labels">
+                @for (collaborator of collection?.collaborators; track collaborator.id; let l = $last){
+                  <a class="ui label">{{ collaborator.first_name }} {{ collaborator.last_name }}</a>
+                }
+              </div>
+              @if (collection?.collaborators == undefined){
+                <div class="ui label">Nicht mit anderen Benutzern geteilt.</div>
+              }
+            </div>
+          }
+
+          <div class="four wide column">
+            <h4 class="ui header">ID</h4>
+            <div class="ui segment">
+              {{ collection.id }}
+            </div>
+          </div>
+          <div class="four wide column">
+            <h4 class="ui header">Sichtbarkeit</h4>
+            <div class="ui segment">
+              @if(collection.areYouPrivate){
+                Privat
+              } @else {
+                Mit anderen geteilt
+              }
+            </div>
+          </div>
+
+
+          <div class="sixteen wide column">
+            <h2 class="ui header">Deine Notizen</h2>
+            <div class="ui labels">
+              @for (note of collection?.notes; track note.id; let l = $last){
+                <a class="ui large label note-label" [routerLink]="['/notes', note.id.toString()]">
+                  <div class="header groß"><h2>{{ note.title }}</h2></div>
+                  <div class="description weiß"><h5>{{ note.description }}</h5></div>
+                </a>
+              }
+            </div>
+            @if (authService.isLoggedIn()){
+              <div class="ui tiny button notiz" [routerLink]="['/adminNotes', collection.id.toString()]">
+                <i class="plus icon"></i> Notiz hinzufügen
+              </div>
+            }
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ui section divider"></div>
+
+    <div class="ui center aligned container">
+      <button [routerLink]="'/collections'" class="ui large grey button">
+        <i class="arrow left icon"></i> Zurück zur Liste
+      </button>
+
+      @if (authService.isLoggedIn()){
+        <div class="ui buttons">
+          <button class="ui large red button" (click)="removeCollection()">
+            <i class="remove icon"></i> Liste löschen
+          </button>
+          <div class="or"></div>
+          <a class="ui large orange button" [routerLink]="['../../admin', collection.id.toString()]">
+            <i class="edit icon"></i> Liste bearbeiten
+          </a>
+        </div>
+      }
+    </div>
+  }
+</div>
+</body>

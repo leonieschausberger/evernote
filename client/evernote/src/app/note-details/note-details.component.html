@@ -1,0 +1,177 @@
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #ffffff;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+  }
+  .ui.container {
+    width: 80%;
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  .ui.card {
+    width: 100%;
+    margin-bottom: 20px;
+    margin-top: 20px;
+  }
+  .ui.card:hover {
+    background-color: #f6f6f6;
+  }
+  .ui.card .content {
+    padding: 20px;
+  }
+  .ui.card .header h3 {
+    margin: 0;
+    font-size: 1.5em;
+  }
+  .ui.card .description {
+    margin: 10px 0;
+  }
+  .ui.card .meta {
+    margin: 5px 0;
+    color: grey;
+  }
+  .ui.card .extra {
+    margin-top: 10px;
+    font-size: 0.9em;
+    color: #888;
+  }
+  .note-label .header h2, .note-label .description h5 {
+    margin: 0;
+    font-size: 1em;
+  }
+  .note-label .header, .note-label .description {
+    display: block;
+    color: black;
+  }
+  .note-label {
+    margin-bottom: 5px;
+  }
+  .ui.buttons .button {
+    margin-top: 10px;
+  }
+  .ui.button.notiz {
+    background-color: #b91554;
+    color: white;
+  }
+  .ui.header {
+    margin-top: 5px;
+  }
+  .ui.header.tag {
+    margin-top: 20px;
+  }
+  .header.groß {
+    font-size: large;
+  }
+  .description.weiß {
+    color: white;
+
+  }
+  .ui.labels .label, .ui.label {
+    background-color: #adc4ec;
+  }
+</style>
+
+<body>
+
+<div class="ui container">
+  @if (note) {
+    <div class="ui centered grid">
+      <div class="sixteen wide column">
+        <h1 class="ui header text">{{ note.title }}</h1>
+        <p class="ui grey sub header">{{ note.description }}</p>
+
+        @if (note.tags && note.tags.length > 0) {
+          <div class="sixteen wide column">
+            <h3 class="ui header tag">Tags</h3>
+            <div class="ui labels">
+              @for (tag of note.tags; track tag.id) {
+                <div class="ui label">{{ tag.title }}</div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      @if (note.images && note.images.length > 0) {
+        <div class="sixteen wide column">
+          <h3 class="ui header">Bilder</h3>
+          <div class="ui small images">
+            @for (image of note.images; track image.id) {
+              <img class="ui rounded fluid image" [src]="image.url" [alt]="image.title">
+            }
+          </div>
+        </div>
+      }
+
+      <div class="sixteen wide column">
+        @if (authService.isLoggedIn()){
+          <button class="ui tiny red labeled icon button" (click)="removeNote()">
+            <i class="remove icon"></i> Notiz löschen
+          </button>
+          <a class="ui tiny orange labeled icon button" [routerLink]="['../../adminNotes/update', note.id.toString()]">
+            <i class="edit icon"></i> Notiz bearbeiten
+          </a>
+
+
+        }
+      </div>
+
+
+        <div class="sixteen wide column">
+          <h3 class="ui header">Todos</h3>
+          @if (authService.isLoggedIn()){
+            <a class="ui tiny yellow labeled icon button" [routerLink]="['../../adminTodos', note.id.toString()]">
+              <i class="plus icon"></i> Todo hinzufügen
+            </a>
+          }
+          <div class="ui cards">
+            @for (todo of note.todos; track todo.id) {
+              <div class="ui card">
+                <div class="content">
+                  <div class="header">{{ todo.title }}</div>
+                  <div class="meta">{{ todo.due_date?.toString() }}</div>
+                  <div class="description">{{ todo.description }}</div>
+                </div>
+                <div class="extra content">
+                  @if (authService.isLoggedIn()){
+                  <div class="ui checkbox">
+                    <input type="checkbox" [checked]="todo.done" (change)="toggleTodoDone(todo)">
+                    <label>{{ todo.done ? 'Abgeschlossen' : 'Offen' }}</label>
+                  </div>
+
+                    <button class="ui tiny red button right floated" (click)="removeTodo(todo.id)">
+                      <i class="remove icon"></i>
+                    </button>
+                    <a class="ui tiny yellow button right floated" [routerLink]="['../../adminTodos/update', todo.notes_id?.toString(), todo.id.toString()]">
+                      <i class="edit icon"></i>
+                    </a>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+
+    </div>
+
+    <div class="ui section divider"></div>
+
+    <div class="ui center aligned container">
+
+      <button [routerLink]="['/collections', note.collections_id]" class="ui large grey button">
+        <i class="arrow left icon"></i> Zurück zur Liste
+      </button>
+    </div>
+  }
+</div>
+
+</body>
